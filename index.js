@@ -1,10 +1,11 @@
+const mongoose = require('mongoose');
 const config = require('config');
 const Joi = require("joi");
 const express = require("express");
 const app = express();
 const helmet = require('helmet')
 const morgan = require('morgan')
-const router = require('./routes/movies')
+const router = require('./routes/genre')
 const logger = require("./middleware/logger");
 
 app.use(helmet());
@@ -22,3 +23,6 @@ console.log(`App Name: ${config.get('name')}`)
 
 const port = process.env.PORT || 30003;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
+mongoose.connect('mongodb://localhost:27017/genreDB')
+  .then(() => console.log('Connected to MongoDB Successfully'))
+  .catch(err => console.log(`Error: Unable to connect to MongDB Server ${err}`))
