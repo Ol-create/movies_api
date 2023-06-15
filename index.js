@@ -4,13 +4,15 @@ const express = require("express");
 const app = express();
 const helmet = require('helmet')
 const morgan = require('morgan')
-const router = require('./routes/genre')
+const movie = require('./routes/genre')
+const customer = require("./routes/customer");
 const logger = require("./middleware/logger");
 
 app.use(helmet());
 app.use(express.json());
 app.use(logger);
-app.use("/api/genres", router);
+app.use('/api/movies' ,movie);
+app.use('/api/customer', customer)
 
 if (app.get('env') === 'development') {
   app.use(morgan("tiny"));

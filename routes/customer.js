@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const express = require('express');
 const Joi = require("joi");
-const router = mongoose.Router();
+const router = express.Router();
 
 const customerSchema = new mongoose.Schema({
   customer_name: {
@@ -19,3 +20,10 @@ const customerSchema = new mongoose.Schema({
 });
 
 const Customer = mongoose.model("Customers", customerSchema);
+
+router.get('/', async (req, res) => {
+    const customers = await Customer.find()
+    res.send(customers)
+})
+
+module.exports = router
