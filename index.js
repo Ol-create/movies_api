@@ -1,16 +1,19 @@
 const Joi = require("joi");
 const express = require("express");
 const app = express();
+const helmet = require('helmet')
+const morgan = require('morgan')
 
 const logger = require("./logger");
 
+app.use(helmet());
 app.use(express.json());
-// app.use(logger);
-app.use(function (req, res, next) {
-  console.log('Logging...')
+app.use(logger);
 
-  next();
-})
+if (app.get('env') === 'development') {
+  app.use(morgan("tiny"));
+  console.log('Morgan enabled...')
+}
 
 const genres = [
   { id: 1, name: "Action" },
@@ -65,11 +68,14 @@ app.get("/api/genres/:id", (req, res) => {
 });
 
 function validateGenre(genre) {
-  const schema = {
-    name: Joi.string().min(3).required(),
-  };
 
-  return Joi.validate(genre, schema);
+  const schema = Joi.object({
+    name: Joi.string()
+      .min(3)
+      .required()
+  })
+
+  return schema.validate(genre);
 }
 
 const port = process.env.PORT || 30003;
