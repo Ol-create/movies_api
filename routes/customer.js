@@ -58,5 +58,12 @@ router.delete('/:id', async (req, res) => {
     res.send(customer)
 })
 
+const validateCustomer = function () {
+ return  Joi.object({
+    customer_name: String.min(5).max(50).required(),
+    phone: String.min(5).max(50).required()
+  })
+}
+
 
 module.exports = router
