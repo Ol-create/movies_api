@@ -45,9 +45,16 @@ router.put('/:id', async (req, res) => {
     const customer = await Customer.findByIdAndUpdate(req.params.id,
         {
             customer_name: req.body.customer_name,
-            phone: req.body.phone
+            phone: req.body.phone,
+            isGold: req.body.isGold
         },
         { new: true })
+    res.send(customer)
+})
+
+//Delete Customer Info
+router.delete('/:id', async (req, res) => {
+    const customer = await Customer.findByIdAndRemove(req.params.id)
     res.send(customer)
 })
 
