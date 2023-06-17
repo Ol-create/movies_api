@@ -7,14 +7,14 @@ const customerSchema = new mongoose.Schema({
   customer_name: {
     type: String,
     required: true,
-    min: 5,
-    max: 50,
+    minLength: 5,
+    maxLength: 50,
   },
   phone: {
     type: String,
     required: true,
-    min: 7,
-    max: 15,
+    minLength: 3,
+    maxLength: 15,
   },
     isGold: {
         type: Boolean,
@@ -36,6 +36,8 @@ router.post('/', async (req, res) => {
         customer_name: req.body.customer_name,
         phone: req.body.phone
     })
+  const { error } = validateCustomer(req.body)
+  console.log(error);
     const result = await customer.save()
    res.send(result)
 })
@@ -46,10 +48,12 @@ router.put('/:id', async (req, res) => {
         {
             customer_name: req.body.customer_name,
             phone: req.body.phone,
-            isGold: req.body.isGold
-        },
-        { new: true })
-    res.send(customer)
+            isGold: req.body.isGold}, { new: true }
+    )
+  if (!customer) return res.status(404).send("Customer with the give ID is with not found")
+  const { error } = validateCustomer(req.body)
+  if (error) return res.status(400).send(error.details[0].message);
+   return res.send(customer)
 })
 
 //Delete Customer Info
@@ -58,11 +62,12 @@ router.delete('/:id', async (req, res) => {
     res.send(customer)
 })
 
-const validateCustomer = function () {
- return  Joi.object({
-    customer_name: String.min(5).max(50).required(),
-    phone: String.min(5).max(50).required()
-  })
+const validateCustomer = function (customer) {
+ const schema = Joi.object({
+    customer_name: Joi.string().min(5).max(50).required(),
+    phone: Joi.string().min(5).max(50).required()
+ })
+  return schema.validate(customer)
 }
 
 
