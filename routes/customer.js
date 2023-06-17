@@ -36,8 +36,9 @@ router.post('/', async (req, res) => {
         customer_name: req.body.customer_name,
         phone: req.body.phone
     })
+  
   const { error } = validateCustomer(req.body)
-  console.log(error);
+  if(error) return res.status(400).send(error.details[0].message)
     const result = await customer.save()
    res.send(result)
 })
