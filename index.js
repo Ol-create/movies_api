@@ -6,7 +6,7 @@ const helmet = require('helmet')
 const morgan = require('morgan')
 const movie = require('./routes/genre')
 const customer = require("./routes/customer");
-const logger = require("./middleware/logger");
+const logger = require("./middlewares/logger");
 
 app.use(helmet());
 app.use(express.json());
