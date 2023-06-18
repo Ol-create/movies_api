@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const Joi = require("joi");
 
-const movieSchema = mongoose.Schema({
+const genreSchema = mongoose.Schema({
   movie_type: {
     type: String,
     required: true,
@@ -12,7 +12,7 @@ const movieSchema = mongoose.Schema({
   }
 })
 
-const Genre = mongoose.model("movies", movieSchema);
+const Genre = mongoose.model("movies", genreSchema);
 
 router.get("/", async (req, res) => {
   const result = await Genre.find()
@@ -69,3 +69,4 @@ function validateGenre(genre) {
 }
 
 module.exports = router;
+module.exports = genreSchema;
