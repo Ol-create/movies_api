@@ -20,6 +20,22 @@ const rentalSchema = new mongoose.Schema({
                 minlength: 5,
                 maxlength: 50,
             }
+        }),
+        required: true,
+    },
+    movies: {
+        type: new mongoose.Schema({
+            title: {
+                type: String,
+                required: true,
+                minlength: true,
+                maxlength: true,
+                trim: true
+            },
+            dailyRentalRate: {
+                type: Number,
+            }
         })
     }
+
 })
