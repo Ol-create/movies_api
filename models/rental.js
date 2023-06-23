@@ -34,8 +34,36 @@ const rentalSchema = new mongoose.Schema({
             },
             dailyRentalRate: {
                 type: Number,
+                required: true,
+                min: 0,
+                max: 255
             }
-        })
+        }),
+        required: true
+    },
+    dateOut: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+
+    dateReturned: {
+        type: Date
+    },
+    rentalFee: {
+        type: Number,
+        min: 0
     }
 
-})
+});
+
+function validateRental(rental) {
+  const schema = Joi.object({
+    customerId: Joi.string().required(),
+    movieId: Joi.string().required(),
+  });
+
+  return schema.validate(rental);
+}
+
+
