@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
-const { Genre, validate } = require("../models/genre");
+const { Rental, validate } = require("../models/rental");
+const { Genre } = require('../models/genre');
+const { Customer }= require('../models/customer')
 
 router.get("/", async (req, res) => {
-  const result = await Genre.find();
+  const result = await Rental.find();
   res.send(result);
 });
 
