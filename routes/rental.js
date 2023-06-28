@@ -2,55 +2,48 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const { Rental, validate } = require("../models/rental");
-const { Genre } = require('../models/genre');
-const { Customer }= require('../models/customer')
+const { Movies } = require('../models/movies');
+const { Customer } = require('../models/customer');
+const Fawn = require('fawn');
+
+Fawn.init(mongoose);
 
 router.get("/", async (req, res) => {
-  const result = await Rental.find();
-  res.send(result);
+  const rentals = await Rental.find().sort("-dateOut");
+  res.send(rentals);
 });
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+  
+  const customer = await Customer.findById(req.body.customerId)
+  if (!customer) return res.status(400).send('Invalid Customer')
 
-  const movie = new Genre({
-    movie_type: req.body.movie_type,
-  });
-  result = await movie.save();
-  res.send(result);
-});
+   let movies = await Movies.findById(req.body.moviesId);
+  if (!movies) return res.status(400).send("Invalid Customer");
+  
+  if (movies.numberInStock === 0) return res.status(400).send('No movies in stock')
 
-router.put("/:id", async (req, res) => {
-  const movie = await Genre.findByIdAndUpdate(
-    req.params.id,
-    {
-      movie_type: req.body.movie_type,
+  let rental = new Rental({
+    customer: {
+      _id: customer._id,
+      name: customer.name,
+      phone: customer.phone
     },
-    { new: true }
-  );
-  if (!movie)
-    return res.status(404).send("The genre with the given ID was not found.");
+    movies: {
+      _id: movies,
+      title: movies.title,
+      dailyRentalRate: movies.dailyRentalRate
+    }
+  })
+  
+  new Fawn.Task()
+    .save('rentals', rental)
+    .update('movies', { _id: movies._id },
+      { $inc: { numberInStock: m - 1 } }
+    ).run();
 
-  const { error } = validate(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-
-  res.send(movie);
+  rental = await rental.save();
 });
 
-router.delete("/:id", async (req, res) => {
-  const movie = await Genre.findByIdAndRemove(req.params.id);
-  if (!movie)
-    return res.status(404).send("The genre with the given ID was not found.");
-
-  res.send(movie);
-});
-
-router.get("/:id", async (req, res) => {
-  const genre = await Genre.findById(req.params.id);
-  if (!genre)
-    return res.status(404).send("The genre with the given ID was not found.");
-  res.send(genre);
-});
-
-module.exports = router;

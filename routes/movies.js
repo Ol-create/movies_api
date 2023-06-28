@@ -29,4 +29,5 @@ router.post('/', async (req, res) => {
   });
   movie = await movie.sav();
   res.send(movie);
-  })
+})
+  

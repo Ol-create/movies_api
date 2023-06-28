@@ -7,6 +7,7 @@ const morgan = require('morgan')
 const movie = require('./routes/genre')
 const customer = require("./routes/customer");
 const logger = require("./middlewares/logger");
+const { objectId }  = require('./Practise/objectId')
 
 app.use(helmet());
 app.use(express.json());
@@ -20,7 +21,7 @@ if (app.get('env') === 'development') {
 }
 
 console.log(`App Name: ${config.get('name')}`)
-
+console.log(`ObjectId: ${objectId}`)
 
 const port = process.env.PORT || 30003;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
