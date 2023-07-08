@@ -22,12 +22,12 @@ router.post('/', async (req, res) => {
       title: req.body.title,
     genre: {
       _id: genre._id,
-      name: genre.body
     },
   numberInStock: req.body.numberInStock,
   dailyRentalRate: req.body.dailyRentalRate
   });
-  movie = await movie.sav();
+  movie = await movie.save();
   res.send(movie);
 })
   
+module.exports = router;

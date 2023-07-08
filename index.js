@@ -4,16 +4,20 @@ const express = require("express");
 const app = express();
 const helmet = require('helmet')
 const morgan = require('morgan')
-const movie = require('./routes/genre')
+const genre = require('./routes/genre')
+const movies = require('./routes/movies')
 const customer = require("./routes/customer");
+const rental = require("./routes/rental")
 const logger = require("./middlewares/logger");
-const { objectId }  = require('./Practise/objectId')
+
 
 app.use(helmet());
 app.use(express.json());
 app.use(logger);
-app.use('/api/movies' ,movie);
-app.use('/api/customer', customer)
+app.use('/api/movies', movies);
+app.use('/api/genre', genre);
+app.use('/api/customer', customer);
+app.use('api/rental', rental)
 
 if (app.get('env') === 'development') {
   app.use(morgan("tiny"));
@@ -21,7 +25,6 @@ if (app.get('env') === 'development') {
 }
 
 console.log(`App Name: ${config.get('name')}`)
-console.log(`ObjectId: ${objectId}`)
 
 const port = process.env.PORT || 30003;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
