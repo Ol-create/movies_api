@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
-const { Movies, validate } = require('../models/movies')
-const { Genre } = require('../models/genre');
 const express = require('express');
 const router = express.Router();
+
+const { Movies, validate } = require("../models/movies");
+const { Genre } = require("../models/genre");
+const auth = require('../middlewares/auth')
 
 //Get all the movies
 router.get('/', async (req, res) => {
@@ -11,7 +13,7 @@ router.get('/', async (req, res) => {
 })
 
 //Post new movie
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) res.status(400).send(error.details[0].message);
   const genre = await Genre.findById(req.body.genreId);

@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+
+const auth = require('../middlewares/auth')
 const {Customer, validate} = require('../models/customer')
 
 
@@ -11,7 +13,7 @@ router.get('/', async (req, res) => {
 })
 
 //Create Customer's data
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const customer = new Customer({
         customer_name: req.body.customer_name,
         phone: req.body.phone
