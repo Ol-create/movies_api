@@ -8,6 +8,7 @@ const genre = require('./routes/genre')
 const movies = require('./routes/movies')
 const customer = require("./routes/customer");
 const rental = require("./routes/rental")
+const users = require("./routes/users");
 const logger = require("./middlewares/logger");
 
 
@@ -18,6 +19,7 @@ app.use('/api/movies', movies);
 app.use('/api/genre', genre);
 app.use('/api/customer', customer);
 app.use('api/rental', rental)
+app.use('/api/users', users)
 
 if (app.get('env') === 'development') {
   app.use(morgan("tiny"));
