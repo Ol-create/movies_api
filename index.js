@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const config = require('config');
 const express = require("express");
-const app = express();
 const helmet = require('helmet')
 const morgan = require('morgan')
 const genre = require('./routes/genre')
@@ -12,7 +11,12 @@ const users = require("./routes/users");
 const auth = require("./routes/auth");
 const logger = require("./middlewares/logger");
 
+if (!config.get('jwtPrivateKey')) {
+  console.log('Error: SecretKey is not defined!');
+  process.exit(1);
+}
 
+const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(logger);
