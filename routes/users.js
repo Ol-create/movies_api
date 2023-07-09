@@ -4,6 +4,14 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const { User, validateUser } = require('../models/users');
+const auth = require('../middlewares/auth');
+
+route.get('/me', auth, async(req, res) => {
+    const result = await User.findById(req.user._id)
+        .select('-password')
+    res.send(result)
+
+})
 
 router.post('/', async (req, res) => {
     const { error } = validateUser(req.body)
