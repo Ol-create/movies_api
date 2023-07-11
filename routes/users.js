@@ -6,7 +6,7 @@ const router = express.Router();
 const { User, validateUser } = require('../models/users');
 const auth = require('../middlewares/auth');
 
-route.get('/me', auth, async(req, res) => {
+router.get('/me', auth, async(req, res) => {
     const result = await User.findById(req.user._id)
         .select('-password')
     res.send(result)
@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
     const { error } = validateUser(req.body)
     if (error) return res.status(400).send(error.details[0].message)
     
-    const validateEmail = User.findOne({
+    const validateEmail = await User.findOne({
         email: req.body.email
     })
     

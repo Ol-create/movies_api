@@ -9,7 +9,6 @@ const customer = require("./routes/customer");
 const rental = require("./routes/rental")
 const users = require("./routes/users");
 const auth = require("./routes/auth");
-const logger = require("./middlewares/logger");
 
 if (!config.get('jwtPrivateKey')) {
   console.log('Error: SecretKey is not defined!');
@@ -19,7 +18,6 @@ if (!config.get('jwtPrivateKey')) {
 const app = express();
 app.use(helmet());
 app.use(express.json());
-app.use(logger);
 app.use('/api/movies', movies);
 app.use('/api/genre', genre);
 app.use('/api/customer', customer);
@@ -32,7 +30,7 @@ if (app.get('env') === 'development') {
   console.log('Morgan enabled...')
 }
 
-console.log(`App Name: ${config.get('name')}`)
+// console.log(`App Name: ${config.get('name')}`)
 
 const port = process.env.PORT || 30003;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
