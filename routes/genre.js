@@ -13,7 +13,6 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res, next) => {
-  try {
     const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -22,9 +21,7 @@ router.post("/", async (req, res, next) => {
   });
 result = await movie.save()
   res.send(result);
-  } catch (ex) {
-    next()
- }
+  
 });
 
 router.put("/:id", async (req, res) => {
