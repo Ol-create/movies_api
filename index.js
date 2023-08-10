@@ -9,6 +9,8 @@ const customer = require("./routes/customer");
 const rental = require("./routes/rental")
 const users = require("./routes/users");
 const auth = require("./routes/auth");
+const Fawn = require('fawn')
+
 
 if (!config.get('jwtPrivateKey')) {
   console.log('Error: SecretKey is not defined!');
@@ -21,9 +23,13 @@ app.use(express.json());
 app.use('/api/movies', movies);
 app.use('/api/genre', genre);
 app.use('/api/customer', customer);
-app.use('api/rental', rental);
+app.use('/api/rental', rental);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
+
+app.use(function (err, req, res, next) {
+  res.status(500).send('Something failed')
+})
 
 if (app.get('env') === 'development') {
   app.use(morgan("tiny"));
@@ -32,8 +38,10 @@ if (app.get('env') === 'development') {
 
 // console.log(`App Name: ${config.get('name')}`)
 
-const port = process.env.PORT || 30003;
+const port = process.env.PORT || 3003;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
 mongoose.connect('mongodb://localhost:27017/genreDB')
   .then(() => console.log('Connected to MongoDB Successfully'))
   .catch(err => console.log(`Error: Unable to connect to MongDB Server ${err}`))
+
+Fawn.init("mongodb://localhost:27017/genreDB");

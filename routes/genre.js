@@ -12,8 +12,9 @@ router.get("/", async (req, res) => {
   res.send(result);
 });
 
-router.post("/", auth, async (req, res) => {
-  const { error } = validate(req.body);
+router.post("/", async (req, res, next) => {
+  try {
+    const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const movie = new Genre({
@@ -21,6 +22,9 @@ router.post("/", auth, async (req, res) => {
   });
 result = await movie.save()
   res.send(result);
+  } catch (ex) {
+    next()
+ }
 });
 
 router.put("/:id", async (req, res) => {

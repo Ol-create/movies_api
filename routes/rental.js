@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
-const Fawn = require("fawn");
 const express = require("express");
 const router = express.Router();
+const Fawn = require('fawn')
 
-const auth = require('../middlewares/auth')
+const auth = require("../middlewares/auth");
 const { Rental, validate } = require("../models/rental");
 const { Movies } = require("../models/movies");
 const { Customer } = require("../models/customer");
 
-// Fawn.init(mongoose);
+// Fawn.init("mongodb://localhost:27017/genreDB");
 
 router.get("/", async (req, res) => {
   const rentals = await Rental.find().sort("-dateOut");
@@ -40,31 +40,39 @@ router.post("/", auth, async (req, res) => {
       dailyRentalRate: movie.dailyRentalRate,
     },
   });
+    
+  // new Fawn.Task()
+  //   .save("rentals", rental)
+  //   .update("movies", { _id: movie._id }, { $inc: { numberInStock: -1 } })
+  //   .run();
 
-  try {
-    new Fawn.Task()
-      .save("rentals", rental)
-      .update(
-        "movies",
-        { _id: movie._id },
-        {
-          $inc: { numberInStock: -1 },
-        }
-      )
-      .run();
+  // res.send(rental);
 
-    res.send(rental);
-  } catch (ex) {
-    res.status(500).send("Something failed.");
-  }
-});
+  const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+      const result = await rental.save();
+      movie.numberInStock--;
+      await movie.save();
+      await session.commitTransaction();
+      res.send(result);
+    } catch (ex) {
+      await session.abortTransaction();
+      throw ex;
+    } finally {
+      session.endSession();
+    }
+  // } catch (ex) {
+  //   res.status(500).send("Something failed.");
+  // }
+  
+})
 
 router.get("/:id", async (req, res) => {
   const rental = await Rental.findById(req.params.id);
-
   if (!rental)
     return res.status(404).send("The rental with the given ID was not found.");
-
   res.send(rental);
 });
 
