@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('config');
 const express = require("express");
+const error = require("./middlewares/error")
 const helmet = require('helmet')
 const morgan = require('morgan')
 const genre = require('./routes/genre')
@@ -27,9 +28,7 @@ app.use('/api/rental', rental);
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 
-app.use(function (err, req, res, next) {
-  res.status(500).send('Something failed')
-})
+app.use(error)
 
 if (app.get('env') === 'development') {
   app.use(morgan("tiny"));
